@@ -1,8 +1,8 @@
 # Skeleton for commit and roll-back exercise
 # Darylle, Jon, Jordan, Shargeel
 # *** Your Code goes Here ***
-import csv
 from tabulate import tabulate
+import csv
 
 dataPath = "Assignment-1/Data-Assignment-1/csv/"
 
@@ -30,50 +30,62 @@ def main():
     # print("Print current status of Log Sub-system\n\n")
 
     # loading lists
-    balList = myreader(dataPath + 'account-balance.csv')
+    mainMemory = myreader(dataPath + 'customer.csv')
     accList = myreader(dataPath + 'account.csv')
-    cheqList = myreader(dataPath + 'customer.csv')
-    savList = myreader(dataPath + 'customer.csv')
+    balList = myreader(dataPath + 'account-balance.csv')
 
-    # linking chequing accounts to user
-    for c in cheqList:
-        key = c[0]
+    # linking accounts to users
+    for m in mainMemory:
+        key = m[0]
         for a in accList:
             id = a[0]
             if (key == id):
-                c.append(a[1])
+                m.append(a[1])
+                m.append(a[2])
 
-    # linking chequing balance to accounts
-    for c in cheqList:
-        num = c[6]
+    # # linking balances to accounts
+    for m in mainMemory:
+        cheq = m[6]
+        sav = m[7]
         for b in balList:
-            if (b[0] == num):
-                c.append(b[1])
-
-    # linking savings accounts to user
-    for s in savList:
-        key = s[0]
-        for a in accList:
-            id = a[0]
-            if (key == id):
-                s.append(a[2])
-
-    # linking saving balance to accounts
-    for s in savList:
-        num = s[6]
-        for b in balList:
-            if (b[0] == num):
-                s.append(b[1])
+            if (b[0] == cheq):
+                m.insert(7, b[1])
+            if (b[0] == sav):
+                m.append(b[1])
 
     # column headers
     user_column = ["ID", "LastName", "FirstName",
-                   "Address", "City", "Age", "Account No.", "Balance"]
+                   "Address", "City", "Age", "Chequing Account", "Chequing Balance", "Savings Account", "Savings Balance"]
 
-    # printing columns
-    print('\nChequing Accounts')
-    print(tabulate(cheqList, headers=user_column))
-    print('\nSavings Accounts')
-    print(tabulate(savList, headers=user_column))
+    # # printing columns
+    print("\nBEFORE Transaction")
+    print(tabulate(mainMemory, headers=user_column))
+
+    amt = 100000
+
+    # Transaction 1
+    emma = '3'
+    for m in mainMemory:
+        if (m[0] == emma):
+            emmaCheq = m[6]
+            intChequing = int(m[7])
+            intChequing = intChequing - amt
+            m[7] = str(intChequing)
+
+    for m in mainMemory:
+        if (m[0] == emma):
+            emmaSav = m[8]
+            intSavings = int(m[9])
+            intSavings = intSavings + amt
+            m[9] = str(intSavings)
+
+    print("\nAFTER Transaction")
+    print(tabulate(mainMemory, headers=user_column))
+
+    print('\n$100,000 withdrawed from', emmaCheq)
+    print('$100,000 deposited into', emmaSav, '\n')
+
+    mywriter(dataPath + 'main-memory.csv', mainMemory)
 
     # Transaction Block 1: Successful
     # print("BLOCK TRANSACTION 1")
