@@ -8,6 +8,12 @@ dataPath = "Assignment-1/Data-Assignment-1/csv/"
 mainMemory = []
 log_transactions = []
 
+# column headers
+cust_columns = ["ID", "LastName", "FirstName",
+                "Address", "City", "Age"]
+account_columns = ["ID", "Checking Account", "Savings Account"]
+accbal_columns = ["Account", "Balance"]
+
 
 def myreader(filename: str):
     with open(filename, newline='') as f:
@@ -23,8 +29,30 @@ def mywriter(filename: str, mylist: list):
         # write multiple rows
         writer.writerows(mylist)
 
-# Your main program
 
+def print_log():
+    # Printing log contents
+    print("Transaction Log System")
+    print('----------------------')
+    if (len(log_transactions) != 0):
+        for l in log_transactions:
+            print(l)
+    # else:
+    #     print("No transactions present")
+    print("\n")
+
+
+def print_main_mem():
+    print("\n")
+    print(tabulate(mainMemory[0], headers=cust_columns))
+    print("\n")
+    print(tabulate(mainMemory[1], headers=account_columns))
+    print("\n")
+    print(tabulate(mainMemory[2], headers=accbal_columns))
+    print("\n")
+
+
+# Your main program
 
 def main():
     # print("First Output)
@@ -46,21 +74,12 @@ def main():
     emma_init_sav_bal = mainMemory[2][9][1]
     emma_init_cheq_bal = mainMemory[2][4][1]
 
-    # column headers
-    cust_columns = ["ID", "LastName", "FirstName",
-                    "Address", "City", "Age"]
-    account_columns = ["ID", "Checking Account", "Savings Account"]
-    accbal_columns = ["Account", "Balance"]
-
-    # printing columns
+    # printing main memory before transactions
     print("\nBEFORE Transaction")
-    print("\n")
-    print(tabulate(mainMemory[0], headers=cust_columns))
-    print("\n")
-    print(tabulate(mainMemory[1], headers=account_columns))
-    print("\n")
-    print(tabulate(mainMemory[2], headers=accbal_columns))
-    print("\n")
+    print_main_mem()
+
+    # printing log
+    print_log()
 
     transaction_amt = 100000
 
@@ -84,25 +103,10 @@ def main():
 
     # Printing contents of main memory after the transaction
     print("\nAFTER Transaction")
-    print("\n")
-    print(tabulate(mainMemory[0], headers=cust_columns))
-    print("\n")
-    print(tabulate(mainMemory[1], headers=account_columns))
-    print("\n")
-    print(tabulate(mainMemory[2], headers=accbal_columns))
-    print("\n")
+    print_main_mem()
 
-    # Printing log contents
-    print("Transaction Log System")
-    print('----------------------')
-    if (len(log_transactions) != 0):
-        for l in log_transactions:
-            print(l)
-
-    else:
-        print("No transactions present")
-
-    print("\n")
+    # printing log
+    print_log()
 
     # COMMIT changes
     mywriter(dataPath + 'customer.csv', mainMemory[0])
