@@ -27,12 +27,11 @@ def mywriter(filename: str, mylist: list):
 
 
 def main():
-    # print("First Output:")
+    # print("First Output)
     # print("Print Original Contents of Databases")
     # print("Print current status of Log Sub-system\n\n")
 
     # loading lists
-    # mainMemory = myreader(dataPath + 'customer.csv')
     cust_csv = myreader(dataPath + 'customer.csv')
     mainMemory.append(cust_csv)
     accList = myreader(dataPath + 'account.csv')
@@ -47,34 +46,13 @@ def main():
     emma_init_sav_bal = mainMemory[2][9][1]
     emma_init_cheq_bal = mainMemory[2][4][1]
 
-    # linking accounts to users
-    # for m in mainMemory:
-    #     key = m[0]
-    #     for a in accList:
-    #         id = a[0]
-    #         if (key == id):
-    #             m.append(a[1])
-    #             m.append(a[2])
-
-    # # linking balances to accounts
-    # for m in mainMemory:
-    #     cheq = m[6]
-    #     sav = m[7]
-    #     for b in balList:
-    #         if (b[0] == cheq):
-    #             m.insert(7, b[1])
-    #         if (b[0] == sav):
-    #             m.append(b[1])
-
     # column headers
-    # user_column = ["ID", "LastName", "FirstName",
-    #                "Address", "City", "Age", "Chequing Account", "Chequing Balance", "Savings Account", "Savings Balance"]
     cust_columns = ["ID", "LastName", "FirstName",
                     "Address", "City", "Age"]
     account_columns = ["ID", "Checking Account", "Savings Account"]
     accbal_columns = ["Account", "Balance"]
 
-    # # printing columns
+    # printing columns
     print("\nBEFORE Transaction")
     print("\n")
     print(tabulate(mainMemory[0], headers=cust_columns))
@@ -86,15 +64,6 @@ def main():
 
     transaction_amt = 100000
 
-    # Transaction 1
-    # emma = '3'
-    # for m in mainMemory:
-    #     if (m[0] == emma):
-    #         emmaCheq = m[6]
-    #         intChequing = int(m[7])
-    #         intChequing = intChequing - amt
-    #         m[7] = str(intChequing)
-
     # taking the money out of chequing
     for m in mainMemory[2]:
         if (m[0] == emma_cheq_acc):
@@ -102,7 +71,7 @@ def main():
             int_cheq_bal -= transaction_amt
             m[1] = str(int_cheq_bal)
             log_transactions.append(
-                "Subtracted $" + str(transaction_amt) + " from chequing account")
+                "Subtracted $" + str(transaction_amt) + " from chequing account " + emma_cheq_acc)
 
     # depositing the money into savings
     for m in mainMemory[2]:
@@ -111,14 +80,7 @@ def main():
             int_sav_bal += transaction_amt
             m[1] = str(int_sav_bal)
             log_transactions.append(
-                "Added $" + str(transaction_amt) + " to savings account")
-
-    # for m in mainMemory:
-    #     if (m[0] == emma):
-    #         emmaSav = m[8]
-    #         intSavings = int(m[9])
-    #         intSavings = intSavings + amt
-    #         m[9] = str(intSavings)
+                "Added $" + str(transaction_amt) + " to savings account " + emma_sav_acc)
 
     # Printing contents of main memory after the transaction
     print("\nAFTER Transaction")
@@ -131,15 +93,16 @@ def main():
     print("\n")
 
     # Printing log contents
-    print("Transaction Log System:")
+    print("Transaction Log System")
+    print('----------------------')
     if (len(log_transactions) != 0):
         for l in log_transactions:
             print(l)
+
     else:
         print("No transactions present")
 
-    # print('\n$100,000 withdrawed from', emmaCheq)
-    # print('$100,000 deposited into', emmaSav, '\n')
+    print("\n")
 
     # COMMIT changes
     mywriter(dataPath + 'customer.csv', mainMemory[0])
@@ -160,6 +123,8 @@ def main():
     # print("Failure occurs!!!!!!! ACTION REQUIRED")
     # print("Must either AUTOMATICALLY Roll-back Database to a state of equilibrium (Bonus), OR\nSTOP Operations and show: (a) Log-Status, and (b) Databases Contents.\n")
     # print("\nThe Log Sub-system contents should show the necessary operations needed to fix the situation!")
+
+    # transaction block 2
 
 
 main()
