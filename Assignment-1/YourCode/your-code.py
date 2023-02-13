@@ -37,12 +37,12 @@ def print_log():
     if (len(log_transactions) != 0):
         for l in log_transactions:
             print(l)
-    # else:
-    #     print("No transactions present")
+    else:
+        print("No transaction logs present")
     print("\n")
 
 
-def print_main_mem():
+def print_tables():
     print("\n")
     print(tabulate(mainMemory[0], headers=cust_columns))
     print("\n")
@@ -76,7 +76,7 @@ def main():
 
     # printing main memory before transactions
     print("\nBEFORE Transaction")
-    print_main_mem()
+    print_tables()
 
     # printing log
     print_log()
@@ -84,13 +84,15 @@ def main():
     transaction_amt = 100000
 
     # taking the money out of chequing
+    logID = 1
     for m in mainMemory[2]:
         if (m[0] == emma_cheq_acc):
             int_cheq_bal = int(m[1])
             int_cheq_bal -= transaction_amt
             m[1] = str(int_cheq_bal)
             log_transactions.append(
-                "Subtracted $" + str(transaction_amt) + " from chequing account " + emma_cheq_acc)
+                str(logID) + ": Subtracted $" + str(transaction_amt) + " from chequing account " + emma_cheq_acc)
+            logID += logID
 
     # depositing the money into savings
     for m in mainMemory[2]:
@@ -99,11 +101,12 @@ def main():
             int_sav_bal += transaction_amt
             m[1] = str(int_sav_bal)
             log_transactions.append(
-                "Added $" + str(transaction_amt) + " to savings account " + emma_sav_acc)
+                str(logID) + ": Added $" + str(transaction_amt) + " to savings account " + emma_sav_acc)
+            logID += logID
 
     # Printing contents of main memory after the transaction
     print("\nAFTER Transaction")
-    print_main_mem()
+    print_tables()
 
     # printing log
     print_log()
