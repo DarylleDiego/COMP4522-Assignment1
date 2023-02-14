@@ -7,6 +7,7 @@ import csv
 dataPath = "Assignment-1/Data-Assignment-1/csv/"
 mainMemory = []
 log_transactions = []
+log = None
 
 # column headers
 cust_columns = ["ID", "LastName", "FirstName",
@@ -34,11 +35,12 @@ def print_log():
     # Printing log contents
     print("Transaction Log System")
     print('----------------------')
-    if (len(log_transactions) != 0):
-        for l in log_transactions:
-            print(l)
-    else:
-        print("No transaction logs present")
+    # if (len(log_transactions) != 0):
+    #     for l in log_transactions:
+    #         print(l)
+    print(log_transactions)
+    # else:
+    #print("No transaction logs present")
     print("\n")
 
 
@@ -52,7 +54,22 @@ def print_tables():
     print("\n")
 
 
+class Log:
+    def __init__(self, trans_id, acct_type, amount, committed, userID, acc_num):
+        self.trans_id = trans_id
+        self.amount = amount
+        self.committed = committed
+        self.userID = userID
+        self.acc_num = acc_num
+        self.acct_type = acct_type
+
+    @classmethod
+    def toString(self):
+        return (self.trans_id + " " + self.acct_type + " " + self.amount +
+                " " + self.committed + " " + self.userID + " " + self.acc_num)
+
 # Your main program
+
 
 def main():
     # print("First Output)
@@ -90,9 +107,11 @@ def main():
             int_cheq_bal = int(m[1])
             int_cheq_bal -= transaction_amt
             m[1] = str(int_cheq_bal)
-            log_transactions.append(
-                str(logID) + ": Subtracted $" + str(transaction_amt) + " from chequing account " + emma_cheq_acc)
+            log = Log(logID, -transaction_amt, "Chequing account",
+                      True, '3', emma_cheq_acc)
             logID += logID
+
+    log_transactions.append(log.toString())
 
     # depositing the money into savings
     for m in mainMemory[2]:
@@ -115,6 +134,9 @@ def main():
     mywriter(dataPath + 'customer.csv', mainMemory[0])
     mywriter(dataPath + 'account.csv', mainMemory[1])
     mywriter(dataPath + 'account-balance.csv', mainMemory[2])
+
+    # externally save log
+    #mywriter(dataPath + 'log.csv', logtable)
 
     # Transaction Block 1: Successful
     # print("BLOCK TRANSACTION 1")
