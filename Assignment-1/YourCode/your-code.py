@@ -14,6 +14,8 @@ cust_columns = ["ID", "LastName", "FirstName",
                 "Address", "City", "Age"]
 account_columns = ["ID", "Checking Account", "Savings Account"]
 accbal_columns = ["Account", "Balance"]
+log_columns = ["Transaction ID", "Amount", "Committed",
+               "User ID", "Account Number", "Account Type"]
 
 
 def myreader(filename: str):
@@ -31,16 +33,10 @@ def mywriter(filename: str, mylist: list):
         writer.writerows(mylist)
 
 
-def print_log():
-    # Printing log contents
-    print("Transaction Log System")
-    print('----------------------')
-    # if (len(log_transactions) != 0):
-    #     for l in log_transactions:
-    #         print(l)
-    print(log_transactions)
-    # else:
-    #print("No transaction logs present")
+def print_log(logList):
+    print("Log Transactions")
+    print("----------------")
+    print(tabulate(logList, headers=log_columns))
     print("\n")
 
 
@@ -55,7 +51,8 @@ def print_tables():
 
 
 class Log:
-    def __init__(self, trans_id, acct_type, amount, committed, userID, acc_num):
+
+    def __init__(self, trans_id, acct_type, amount, committed, userID, acc_num) -> None:
         self.trans_id = trans_id
         self.amount = amount
         self.committed = committed
@@ -63,10 +60,8 @@ class Log:
         self.acc_num = acc_num
         self.acct_type = acct_type
 
-    @classmethod
-    def toString(self):
-        return (self.trans_id + " " + self.acct_type + " " + self.amount +
-                " " + self.committed + " " + self.userID + " " + self.acc_num)
+    def __dir__(self):
+        return [self.trans_id, self.amount, self.committed, self.userID, self.acc_num, self.acct_type]
 
 # Your main program
 
@@ -96,7 +91,7 @@ def main():
     print_tables()
 
     # printing log
-    print_log()
+    print_log(tabulate(log_transactions))
 
     transaction_amt = 100000
 
@@ -107,11 +102,10 @@ def main():
             int_cheq_bal = int(m[1])
             int_cheq_bal -= transaction_amt
             m[1] = str(int_cheq_bal)
-            log = Log(logID, -transaction_amt, "Chequing account",
+            log = Log(logID, "Chequing", -transaction_amt,
                       True, '3', emma_cheq_acc)
+            log_transactions.append(log.__dir__())
             logID += logID
-
-    log_transactions.append(log.toString())
 
     # depositing the money into savings
     for m in mainMemory[2]:
@@ -119,8 +113,9 @@ def main():
             int_sav_bal = int(m[1])
             int_sav_bal += transaction_amt
             m[1] = str(int_sav_bal)
-            log_transactions.append(
-                str(logID) + ": Added $" + str(transaction_amt) + " to savings account " + emma_sav_acc)
+            log = Log(logID, "Savings", +transaction_amt,
+                      True, '3', emma_sav_acc)
+            log_transactions.append(log.__dir__())
             logID += logID
 
     # Printing contents of main memory after the transaction
@@ -128,7 +123,7 @@ def main():
     print_tables()
 
     # printing log
-    print_log()
+    print_log(log_transactions)
 
     # COMMIT changes
     mywriter(dataPath + 'customer.csv', mainMemory[0])
@@ -136,7 +131,7 @@ def main():
     mywriter(dataPath + 'account-balance.csv', mainMemory[2])
 
     # externally save log
-    #mywriter(dataPath + 'log.csv', logtable)
+    mywriter(dataPath + 'log.csv', log_transactions)
 
     # Transaction Block 1: Successful
     # print("BLOCK TRANSACTION 1")
